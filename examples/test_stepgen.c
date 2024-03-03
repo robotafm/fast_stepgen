@@ -3,7 +3,7 @@
 #include <string.h> //Для memcpy
 #include <time.h>  //Для clock_gettime
 
-#define NUMBER 1000
+#define NUMBER 10000
 
 char* concat(char *s1, char *s2) {
 
@@ -32,6 +32,7 @@ int main (void)
     long int tt;
     int counter = 0;
     int max_delay = 0;
+    int min_delay = 1000000000;
    
     //Определяем текущее время
     clock_gettime (CLOCK_REALTIME, &mt1);
@@ -70,6 +71,7 @@ int main (void)
 		
 		//Ищем максимальную задержку
 		if (tt>max_delay) max_delay = tt;
+		if (tt<min_delay) min_delay = tt;
 		
 		//Определяем текущее время
         clock_gettime (CLOCK_REALTIME, &mt3);
@@ -92,7 +94,10 @@ int main (void)
 			printf("Can't open file...\n");
 		}
 	}
-	printf("Максимальная задержка %d нс\n", max_delay);
+	printf("Максимальная задержка %d нс, %d кГц\n", max_delay, (int)(500000/max_delay));
+	printf("Мимимальная задержка %d нс, %d кГц\n", min_delay, (int)(500000/min_delay));
+	tt=1000000000*(mt3.tv_sec - mt1.tv_sec)+(mt3.tv_nsec - mt1.tv_nsec);
+	printf("Сделано %d шагов за %f мс.\n", NUMBER, (double)tt/1000000);
     fclose(fp);	
     return 0;
 }
